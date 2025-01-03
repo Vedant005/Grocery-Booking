@@ -1,6 +1,6 @@
-#Grocery Booking
+# Grocery Booking
 
-#Roles:
+## Roles:
 
 - Admin
 - User
