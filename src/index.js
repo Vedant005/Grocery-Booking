@@ -1,20 +1,18 @@
 import { app } from "./app.js";
 import dotenv from "dotenv";
-import pool from "./db/index.js";
+import { testDBConnection } from "./db/index.js";
+import express from "express";
+import routes from "./routes";
+const app = express();
 
 dotenv.config({
   path: "./.env",
 });
 
-const testDBConnection = async () => {
-  try {
-    await pool.query("SELECT 1");
-    console.log("MySQL database connected successfully.");
-  } catch (error) {
-    console.error("Error connecting to MySQL database:", error.message);
-    process.exit(1);
-  }
-};
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/api", routes);
 
 const startServer = async () => {
   await testDBConnection();
@@ -26,13 +24,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-// connectDB()
-//   .then(() => {
-//     app.listen(process.env.PORT || 8000, () => {
-//       console.log(` Server is running at port : ${process.env.PORT}`);
-//     });
-//   })
-//   .catch((error) => {
-//     console.log("Mongo Db connection failed !!", error);
-//   });
