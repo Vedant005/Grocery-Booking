@@ -25,7 +25,7 @@ export const placeOrder = async (req, res) => {
     for (const item of items) {
       const product = await getProductPrice(item.productId);
       if (!product) {
-        throw new Error(`Product with ID ${item.productId} not found`);
+        throw new ApiError(404, "Product not found");
       }
       totalPrice += product.price * item.quantity;
     }
@@ -42,13 +42,11 @@ export const placeOrder = async (req, res) => {
 
     res
       .status(201)
-      .json(new ApiResponse(200, { orderId }, "Order placed successfully"));
+      .json(new ApiResponse(201, { orderId }, "Order placed successfully"));
   } catch (error) {
     await connection.rollback();
     connection.release();
-    res
-      .status(500)
-      .json(new ApiError(500, "Failed to place order", error.message));
+    res.status(500).json(new ApiError(500, "Failed to place order"));
   }
 };
 
@@ -56,7 +54,7 @@ export const viewOrders = async (req, res) => {
   const { userId } = req.params;
 
   if (!userId) {
-    return res.status(400).json(new ApiError(400, "User ID is required"));
+    return res.status(401).json(new ApiError(401, "User ID is required"));
   }
 
   try {

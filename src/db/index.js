@@ -12,4 +12,14 @@ const pool = mysql
   })
   .promise();
 
+export const testDBConnection = async () => {
+  try {
+    await pool.query("SELECT 1");
+    console.log("MySQL database connected successfully.");
+  } catch (error) {
+    console.error("Error connecting to MySQL database:", error.message);
+    process.exit(1);
+  }
+};
+
 export default pool;
