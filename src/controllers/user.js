@@ -5,7 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
-export const register = asyncHandler(async (req, res) => {
+export const register = async (req, res) => {
   const { fullName, email, password } = req.body;
 
   try {
@@ -29,7 +29,7 @@ export const register = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500).json(new ApiError(500, "Error registering user"));
   }
-});
+};
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -60,13 +60,17 @@ export const login = async (req, res) => {
   }
 };
 
-export const getUsers = asyncHandler(async (req, res) => {
-  const users = await getAllUsers(); // Await the promise to get resolved
-  if (!users || users.length === 0) {
-    return res.status(200).json(new ApiResponse(201, users, "No users yet!"));
-  }
+export const getUsers = async (req, res) => {
+  try {
+    const users = await getAllUsers();
+    if (!users || users.length === 0) {
+      return res.status(200).json(new ApiResponse(201, users, "No users yet!"));
+    }
 
-  return res
-    .status(201)
-    .json(new ApiResponse(200, users, "Users fetched successfully"));
-});
+    return res
+      .status(201)
+      .json(new ApiResponse(200, users, "Users fetched successfully"));
+  } catch (error) {
+    throw new ApiError(500, "Could not get users");
+  }
+};
