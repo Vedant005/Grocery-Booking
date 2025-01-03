@@ -66,7 +66,6 @@ export const login = async (req, res) => {
 
 export const getUsers = asyncHandler(async (req, res) => {
   const users = await getAllUsers(); // Await the promise to get resolved
-  console.log("Fetched users in getUsers:", users); // Debugging log
   if (!users || users.length === 0) {
     return res.status(200).json(new ApiResponse(201, users, "No users yet!"));
   }
